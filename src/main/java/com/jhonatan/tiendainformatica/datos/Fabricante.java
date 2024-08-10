@@ -8,6 +8,10 @@ public class Fabricante {
     public Fabricante() {
     }
 
+    public Fabricante(int idFabricante) {
+        this.idFabricante = idFabricante;
+    }
+
     public Fabricante(int idFabricante, String nombre) {
         this.idFabricante = idFabricante;
         this.nombre = nombre;
