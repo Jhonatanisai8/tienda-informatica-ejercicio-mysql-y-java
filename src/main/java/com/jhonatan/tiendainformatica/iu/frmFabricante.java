@@ -18,6 +18,7 @@ public class frmFabricante extends javax.swing.JFrame {
         initComponents();
         this.mostrarDatosTabla();
         // this.configurarTemporizador();
+        txtId.setVisible(false);
     }
 
     // Método para configurar el temporizador y refrescar la tabla cada 5 segundos
@@ -44,6 +45,7 @@ public class frmFabricante extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         txtNombres = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
+        txtId = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -69,20 +71,23 @@ public class frmFabricante extends javax.swing.JFrame {
             }
         });
 
+        txtId.setEditable(false);
+        txtId.setEnabled(false);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addComponent(txtNombres))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(121, 121, 121)
-                        .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
-                        .addGap(120, 120, 120)))
+                .addGap(19, 19, 19)
+                .addComponent(txtNombres)
                 .addGap(35, 35, 35))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(121, 121, 121)
+                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
+                .addGap(37, 37, 37)
+                .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -90,7 +95,9 @@ public class frmFabricante extends javax.swing.JFrame {
                 .addGap(16, 16, 16)
                 .addComponent(txtNombres, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(16, Short.MAX_VALUE))
         );
 
@@ -142,6 +149,11 @@ public class frmFabricante extends javax.swing.JFrame {
         );
 
         btnEliminar.setText("Modificar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
 
         btnEliminar1.setText("Buscar");
 
@@ -231,6 +243,10 @@ public class frmFabricante extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         this.agregarFabricante();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        this.modificarFabricante();
+    }//GEN-LAST:event_btnEliminarActionPerformed
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -276,6 +292,7 @@ public class frmFabricante extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblFabricantes;
+    private javax.swing.JTextField txtId;
     private javax.swing.JTextField txtNombres;
     // End of variables declaration//GEN-END:variables
 
@@ -296,7 +313,10 @@ public class frmFabricante extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(rootPane, "Por favor debe seleccionar un fila.", "ATENCIÓN", JOptionPane.INFORMATION_MESSAGE);
         } else {
             String nombre;
+            Long idFabricante;
             nombre = String.valueOf(tblFabricantes.getValueAt(fila, 1));
+            idFabricante = (Long) tblFabricantes.getValueAt(fila, 0);
+            txtId.setText(String.valueOf(idFabricante));
             txtNombres.setText(nombre);
         }
     }
@@ -338,7 +358,7 @@ public class frmFabricante extends javax.swing.JFrame {
     
     private void agregarFabricante() {
         if (txtNombres.getText().isBlank()) {
-            JOptionPane.showMessageDialog(rootPane, "Por favor ingrese el nombre del fabricante por favor?", "ATENCIÓN", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(rootPane, "Por favor ingrese el nombre del fabricante.", "ATENCIÓN", JOptionPane.INFORMATION_MESSAGE);
             txtNombres.requestFocus();
         } else {
             String nombreFabricante;
@@ -356,4 +376,18 @@ public class frmFabricante extends javax.swing.JFrame {
         }
     }
     
+    private void modificarFabricante() {
+        if (txtNombres.getText().isBlank()) {
+            JOptionPane.showMessageDialog(rootPane, "Por favor seleciona el fabricante a modificar", "ATENCIÓN", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            String nombre;
+            int id;
+            nombre = txtNombres.getText();
+            id = Integer.parseInt(txtId.getText());
+            Fabricante fabricanteModificado = new Fabricante(id, nombre);
+            daoImpleFabricante.modificarFabricante(fabricanteModificado);
+            JOptionPane.showMessageDialog(rootPane, "Fabricante modificado.", "ATENCIÓN", JOptionPane.INFORMATION_MESSAGE);
+            mostrarDatosTabla();
+        }
+    }
 }
