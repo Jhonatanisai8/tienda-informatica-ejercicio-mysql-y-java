@@ -1,6 +1,6 @@
 package com.jhonatan.tiendainformatica;
 
-import com.jhonatan.tiendainformatica.iu.frmDasboard;
+import com.jhonatan.tiendainformatica.iu.frmFabricante;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
@@ -10,7 +10,7 @@ import java.util.Scanner;
 public class TiendaInformatica {
 
     public static void main(String[] args) {
-        frmDasboard de = new frmDasboard();
+        frmFabricante de = new frmFabricante();
         de.setVisible(true);
 
     }
