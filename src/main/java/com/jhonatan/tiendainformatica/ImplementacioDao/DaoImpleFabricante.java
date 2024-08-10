@@ -20,9 +20,10 @@ public class DaoImpleFabricante implements FabricanteDao {
     private final String COUNT_PRODUCTS = "SELECT COUNT(*) FROM producto WHERE id_fabricante = ?";
     private final String DELETE_FABRICANTE = "DELETE FROM fabricante WHERE id_fabricante = ?";
     private final String SELECT_OBTENER_FABRICANTE = "SELECT id_fabricante,nombre FROM fabricante WHERE id_fabricante = ?";
-    private final String SELECT_INNER_JOIN = "SELECT fabricante.id_fabricante, fabricante.nombre, COUNT(producto.id_producto) AS num_productos  " +
-" FROM fabricante LEFT JOIN producto ON  fabricante.id_fabricante = producto.id_fabricante " +
-" GROUP BY     fabricante.id_fabricante, fabricante.nombre ORDER BY fabricante.id_fabricante ASC";
+    private final String SELECT_INNER_JOIN = "SELECT fabricante.id_fabricante, fabricante.nombre, COUNT(producto.id_producto) AS num_productos  "
+            + " FROM fabricante LEFT JOIN producto ON  fabricante.id_fabricante = producto.id_fabricante "
+            + " GROUP BY     fabricante.id_fabricante, fabricante.nombre ORDER BY fabricante.id_fabricante ASC";
+
     @Override
     public void listarFabricantesTabla(DefaultTableModel modelo, JTable tabla) {
         try {
@@ -42,14 +43,7 @@ public class DaoImpleFabricante implements FabricanteDao {
 
         } catch (SQLException e) {
             System.out.println("error al listar en tabla : " + e.getMessage());
-        } finally {
-            try {
-                conexion.desconectarBaseDatos();
-            } catch (SQLException ex) {
-                
-            }
         }
-
     }
 
     @Override
@@ -89,6 +83,7 @@ public class DaoImpleFabricante implements FabricanteDao {
         try {
             Connection conector = conexion.conectarBaseDatos();
             PreparedStatement consultaPreparedStatement = conector.prepareStatement(DELETE_FABRICANTE);
+            consultaPreparedStatement.setInt(1, fabricante.getIdFabricante());
             if (!tieneProductosAsocidos(fabricante.getIdFabricante())) {
                 registros = consultaPreparedStatement.executeUpdate();
             }
@@ -140,4 +135,19 @@ public class DaoImpleFabricante implements FabricanteDao {
         return false;
     }
 
+    public boolean nombreRepetido(String nombre) {
+        try {
+            Connection conectar = conexion.conectarBaseDatos();
+            PreparedStatement consultaPreparada = conectar.prepareStatement("SELECT * FROM fabricante WHERE nombre  = ?");
+            consultaPreparada.setString(1, nombre);
+            ResultSet resultado = consultaPreparada.executeQuery();
+            if (resultado.next()) {
+                return resultado.getInt(1) > 0;
+            }
+            conexion.desconectarBaseDatos();
+        } catch (SQLException e) {
+            System.out.println("error al consulta por repetidos: "+e.getMessage());
+        }
+        return false;
+    }
 }
