@@ -10,6 +10,7 @@ import com.jhonatan.tiendainformatica.datos.Fabricante;
 import com.jhonatan.tiendainformatica.datos.Producto;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -20,9 +21,14 @@ public class frmRegistroProductos extends javax.swing.JFrame {
     DaoImpleFabricante daoImpleFabricante = new DaoImpleFabricante();
     DaoImpleProducto daoImpleProducto = new DaoImpleProducto();
 
+    private final String columnas[] = {"ID PRODUCTO", "NOMBRE", "PRECIO", "NOMBRE FABRICANTE"};
+    DefaultTableModel model = new DefaultTableModel(columnas, 0);
+
     public frmRegistroProductos() {
         initComponents();
         this.llenarCombo();
+        tblProductos.setModel(model);
+        this.mostrarTabla();
     }
 
     /**
@@ -228,6 +234,8 @@ public class frmRegistroProductos extends javax.swing.JFrame {
             idFabricante = cbxFabricante.getSelectedIndex() + 1;
             Producto producto = new Producto(nombre, precio, idFabricante);
             daoImpleProducto.insertarProducto(producto);
+            limpiarCampos();
+            mostrarTabla();
             JOptionPane.showMessageDialog(null, "Producto con ID: " + idFabricante + " insertado correctamente.", "ATENCIÓN", JOptionPane.INFORMATION_MESSAGE);
         } else {
             JOptionPane.showMessageDialog(null, "Por favor completar el campo " + campo, "ATENCIÓN", JOptionPane.WARNING_MESSAGE);
@@ -262,5 +270,16 @@ public class frmRegistroProductos extends javax.swing.JFrame {
         txtNombre.setText("");
         txtPrecio.setText("");
         txtNombre.requestFocus();
+    }
+
+    public void limpiarTabla() {
+        while (model.getRowCount() > 0) {
+            model.removeRow(0);
+        }
+    }
+
+    private void mostrarTabla() {
+        limpiarTabla();
+        daoImpleProducto.listarEnTabla(model, tblProductos);
     }
 }
