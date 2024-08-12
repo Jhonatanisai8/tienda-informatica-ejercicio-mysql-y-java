@@ -4,6 +4,8 @@ import com.jhonatan.tiendainformatica.dao.Conexion;
 import com.jhonatan.tiendainformatica.dao.FabricanteDao;
 import com.jhonatan.tiendainformatica.datos.Fabricante;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
@@ -50,6 +52,25 @@ public class DaoImpleFabricante implements FabricanteDao {
         } catch (SQLException e) {
             System.out.println("error al listar en tabla : " + e.getMessage());
         }
+    }
+
+    public List<Fabricante> listarFAbricantes() {
+        List<Fabricante> listaFabricante = new ArrayList<>();
+        String SQL = "SELECT nombre FROM fabricante ORDER BY id_fabricante";
+        try {
+            Connection conectar = conexion.conectarBaseDatos();
+            PreparedStatement consultaPrepara = conectar.prepareStatement(SQL);
+            ResultSet resultado = consultaPrepara.executeQuery();
+            while (resultado.next()) {
+                Fabricante fabricante = new Fabricante();
+                fabricante.setNombre(resultado.getString("nombre"));
+                listaFabricante.add(fabricante);
+            }
+            conexion.desconectarBaseDatos();
+        } catch (SQLException e) {
+            System.out.println("Error al listar fabricantes: " + e.getMessage());
+        }
+        return listaFabricante;
     }
 
     private static void mostrarResultados(DefaultTableModel modelo, JTable tabla, PreparedStatement consultaPreparada) {
