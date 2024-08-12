@@ -6,7 +6,7 @@ import javax.swing.table.DefaultTableModel;
 
 public interface FabricanteDao {
 
-    public void listarFabricantesTabla(DefaultTableModel modelo,JTable tabla);
+    public void listarFabricantesTabla(DefaultTableModel modelo, JTable tabla, String nombre, int opcion);
 
     public int insertarFabricante(Fabricante fabricante);
 

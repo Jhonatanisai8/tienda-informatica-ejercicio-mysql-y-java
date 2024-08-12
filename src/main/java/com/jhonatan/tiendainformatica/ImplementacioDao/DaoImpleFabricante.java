@@ -23,12 +23,37 @@ public class DaoImpleFabricante implements FabricanteDao {
     private final String SELECT_INNER_JOIN = "SELECT fabricante.id_fabricante, fabricante.nombre, COUNT(producto.id_producto) AS num_productos  "
             + " FROM fabricante LEFT JOIN producto ON  fabricante.id_fabricante = producto.id_fabricante "
             + " GROUP BY     fabricante.id_fabricante, fabricante.nombre ORDER BY fabricante.id_fabricante ASC";
+    private final String BUSCAR_EMPLEADO = "SELECT fabricante.id_fabricante, fabricante.nombre, COUNT(producto.id_producto) AS num_productos "
+            + " FROM fabricante LEFT JOIN producto ON  fabricante.id_fabricante = producto.id_fabricante "
+            + "WHERE fabricante.nombre = ?  "
+            + "GROUP BY     fabricante.id_fabricante, fabricante.nombre  "
+            + " ORDER BY fabricante.id_fabricante ASC";
 
     @Override
-    public void listarFabricantesTabla(DefaultTableModel modelo, JTable tabla) {
+    public void listarFabricantesTabla(DefaultTableModel modelo, JTable tabla, String nombre, int opcion) {
         try {
             Connection conectar = conexion.conectarBaseDatos();
-            PreparedStatement consultaPreparada = conectar.prepareStatement(SELECT_INNER_JOIN);
+            PreparedStatement consultaPreparada;
+
+            switch (opcion) {
+                case 1 -> {
+                    consultaPreparada = conectar.prepareStatement(BUSCAR_EMPLEADO);
+                    consultaPreparada.setString(1, nombre);
+                    mostrarResultados(modelo, tabla, consultaPreparada);
+                }
+                case 2 -> {
+                    consultaPreparada = conectar.prepareStatement(SELECT_INNER_JOIN);
+                    mostrarResultados(modelo, tabla, consultaPreparada);
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println("error al listar en tabla : " + e.getMessage());
+        }
+    }
+
+    private static void mostrarResultados(DefaultTableModel modelo, JTable tabla, PreparedStatement consultaPreparada) {
+        try {
             ResultSet resultado = consultaPreparada.executeQuery();
             ResultSetMetaData datos = resultado.getMetaData();
             int cantidadColumnas = datos.getColumnCount();
@@ -42,7 +67,7 @@ public class DaoImpleFabricante implements FabricanteDao {
             tabla.setModel(modelo);
 
         } catch (SQLException e) {
-            System.out.println("error al listar en tabla : " + e.getMessage());
+            System.out.println("Error al listar " + e.getMessage());
         }
     }
 
@@ -146,7 +171,7 @@ public class DaoImpleFabricante implements FabricanteDao {
             }
             conexion.desconectarBaseDatos();
         } catch (SQLException e) {
-            System.out.println("error al consulta por repetidos: "+e.getMessage());
+            System.out.println("error al consulta por repetidos: " + e.getMessage());
         }
         return false;
     }
